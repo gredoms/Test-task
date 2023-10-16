@@ -37,14 +37,6 @@ func main() {
 		fmt.Println("Ошибка, некорректные данные")
 		return
 	}
-	/*for i := 0; i < len(znaki); i++ {
-		soderjitese := strings.Contains(massifrazdznazh[0], znaki[i])
-		soderjitese1 := strings.Contains(massifrazdznazh[1], znaki[i])
-		if soderjitese || soderjitese1 == true {
-			fmt.Println("Ошибка, некорректные данные")
-			return
-		}
-	}*/
 
 	for i := 0; i < len(nevernieznacheniya); i++ {
 		if strings.Contains(massifrazdznazh[0], nevernieznacheniya[i]) || strings.Contains(massifrazdznazh[1], nevernieznacheniya[i]) == true {
