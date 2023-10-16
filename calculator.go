@@ -7,54 +7,56 @@ import (
 )
 
 func main() {
-	znaki := [4]string{"+", "-", "*", "/"}
+	signs := [4]string{"+", "-", "*", "/"}
 
-	nevernieznacheniya := [2]string{".", ","}
+	incorrectSigns := [2]string{".", ","}
 
-	var exp string
+	var expression string
 
 	fmt.Println("Введите")
-	fmt.Scanln(&exp)
+	fmt.Scanln(&expression)
 
-	oper := -1
+	q := -1
 
-	for i := 0; i < len(znaki); i++ {
-		soderjit := strings.Contains(exp, znaki[i])
-		if soderjit == true {
-			oper = i
+	for i := 0; i < len(signs); i++ {
+		contains := strings.Contains(expression, signs[i])
+		if contains == true {
+			q = i
 			break
+
 		}
 	}
 
-	if oper == -1 {
+	if q == -1 {
 		fmt.Print("Ошибка, неккоретные данные")
 		return
 	}
 
-	massifrazdznazh := strings.Split(exp, znaki[oper])
+	splitArray := strings.Split(expression, signs[q])
 
-	if len(massifrazdznazh) > 2 {
+	if len(splitArray) > 2 {
 		fmt.Println("Ошибка, некорректные данные")
 		return
 	}
 
-	for i := 0; i < len(nevernieznacheniya); i++ {
-		if strings.Contains(massifrazdznazh[0], nevernieznacheniya[i]) || strings.Contains(massifrazdznazh[1], nevernieznacheniya[i]) == true {
+	for i := 0; i < len(incorrectSigns); i++ {
+		if strings.Contains(splitArray[0], incorrectSigns[i]) || strings.Contains(splitArray[1], incorrectSigns[i]) == true {
 			fmt.Println("Ошибка, некорректные данные")
 			return
 		}
 	}
 
 	var a, b int
-
-	if sistemais(massifrazdznazh[0]) != sistemais(massifrazdznazh[1]) == true {
+	variable1 := systemDefinition(splitArray[0])
+	variable2 := systemDefinition(splitArray[1])
+	if variable1 != variable2 == true {
 		fmt.Println("Ошибка, некорректные данные")
-	} else if sistemais(massifrazdznazh[0]) && sistemais(massifrazdznazh[1]) == true {
-		a = isrimskihvarabskie(massifrazdznazh[0])
-		b = isrimskihvarabskie(massifrazdznazh[1])
+	} else if variable1 && variable2 == true {
+		a = fromRomantoarabic(splitArray[0])
+		b = fromRomantoarabic(splitArray[1])
 	} else {
-		a, _ = strconv.Atoi(massifrazdznazh[0])
-		b, _ = strconv.Atoi(massifrazdznazh[1])
+		a, _ = strconv.Atoi(splitArray[0])
+		b, _ = strconv.Atoi(splitArray[1])
 	}
 
 	if (10 < a || a < 1) || (10 < b || b < 1) {
@@ -64,7 +66,7 @@ func main() {
 
 	var result int
 
-	switch znaki[oper] {
+	switch signs[q] {
 	case "+":
 		result = a + b
 		break
@@ -79,18 +81,18 @@ func main() {
 		break
 	}
 
-	if sistemais(massifrazdznazh[0]) && sistemais(massifrazdznazh[1]) == true {
+	if systemDefinition(splitArray[0]) && systemDefinition(splitArray[1]) == true {
 		if result <= 0 {
 			panic("Ответ <=0, что невозможно в римской системе счисления")
 		}
-		fmt.Println(isarabskihvrimskie(result))
+		fmt.Println(fromArabictoroman(result))
 	} else {
 		fmt.Println(result)
 	}
 }
 
-func sistemais(r string) bool {
-	karta := map[byte]int{
+func systemDefinition(r string) bool {
+	k := map[byte]int{
 		'I': 1,
 		'V': 5,
 		'X': 10,
@@ -98,34 +100,32 @@ func sistemais(r string) bool {
 		'C': 100,
 	}
 	for i := 0; i < len(r); i++ {
-		_, estbli := karta[r[i]]
-		if estbli == false {
+		_, contains := k[r[i]]
+		if contains == false {
 			return false
 		}
 	}
 	return true
 }
 
-func isrimskihvarabskie(x string) int {
-	karta := map[string]int{
-		"I": 1,
-		"V": 5,
-		"X": 10,
+func fromRomantoarabic(x string) int {
+	k := map[int32]int{
+		'I': 1,
+		'V': 5,
+		'X': 10,
 	}
 
-	poryadki := []string{"X", "V", "I"}
-
-	massivizx := strings.Split(x, "")
+	array := []int32{'X', 'V', 'I'}
 
 	var result int
 
-	for _, poryadok := range poryadki {
-		for _, y := range massivizx {
-			if y == poryadok {
-				if result <= karta[massivizx[0]]+1 {
-					result += karta[poryadok]
+	for _, arrayValue := range array {
+		for _, y := range x {
+			if y == arrayValue {
+				if result <= k[int32(x[0])]+1 {
+					result += k[arrayValue]
 				} else {
-					result -= karta[poryadok]
+					result -= k[arrayValue]
 				}
 			}
 		}
@@ -133,7 +133,7 @@ func isrimskihvarabskie(x string) int {
 	return result
 }
 
-func isarabskihvrimskie(x int) string {
+func fromArabictoroman(x int) string {
 	karta := map[int]string{
 		1:   "I",
 		4:   "IV",
@@ -146,14 +146,14 @@ func isarabskihvrimskie(x int) string {
 		100: "C",
 	}
 
-	poryadoki := []int{100, 90, 50, 40, 10, 9, 5, 4, 1}
+	array := []int{100, 90, 50, 40, 10, 9, 5, 4, 1}
 
 	var result string
 
-	for _, poryadok := range poryadoki {
-		for x >= poryadok {
-			x = x - poryadok
-			result = result + karta[poryadok]
+	for _, arrayValue := range array {
+		for x >= arrayValue {
+			x = x - arrayValue
+			result = result + karta[arrayValue]
 		}
 	}
 	return result
